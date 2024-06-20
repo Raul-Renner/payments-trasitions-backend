@@ -1,0 +1,9 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  data:
+    mongodb:
+      host: mongodb
+      port: 27017
+      database: banksDatabase
+      authentication-database: admin

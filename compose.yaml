@@ -1,0 +1,11 @@
+version: "5"
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    volumes:
+      - C:\Users\raulr\OneDrive\Documentos\database:/data/db
+    ports:
+      - 27017:27017
+
+
