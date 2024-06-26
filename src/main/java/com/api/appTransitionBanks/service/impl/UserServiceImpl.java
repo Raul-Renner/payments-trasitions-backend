@@ -1,43 +1,46 @@
 package com.api.appTransitionBanks.service.impl;
 
-import com.api.appTransitionBanks.entities.IndividualPerson;
-import com.api.appTransitionBanks.entities.Person;
-import com.api.appTransitionBanks.repository.PersonRepository;
-import com.api.appTransitionBanks.service.UserService;
+import com.api.appTransitionBanks.dto.PersonDTO;
+import com.api.appTransitionBanks.enums.ProfileEnum;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
+import static com.api.appTransitionBanks.fieldQueries.IndividualPersonFieldQuery.CPF;
+import static com.api.appTransitionBanks.fieldQueries.LegalPersonFieldQuery.CNPJ;
+
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl {
 
-    private final PersonRepository personRepository;
+    private final IndividualPersonServiceImpl individualPersonService;
 
-//    @Override
-    public List<Person> findAll() {
-        return personRepository.findAll();
+    private final LegalPersonServiceImpl legalPersonService;
+
+
+    public void deleteProfile(PersonDTO personDTO){
+        try {
+            var exist = personDTO.profile().equals(ProfileEnum.JURIDICA)
+            ? legalPersonService.existBy(CNPJ.existBy(List.of(personDTO.id())))
+            : individualPersonService.existBy(CPF.existBy(List.of(personDTO.id())));
+
+            if(exist){
+                if ((personDTO.profile().equals(ProfileEnum.JURIDICA))) {
+                    legalPersonService.deleteProfile(personDTO.id());
+                } else {
+                    individualPersonService.deleteProfile(personDTO.id());
+                }
+            }else {
+                throw new RuntimeException("Usuário não encontrado no sistema!");
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Usuário não encontrado no sistema!");
+        }
     }
 
-    @Override
-    public void viewNotifications() {
 
-    }
 
-    @Override
-    public void viewHistoricTransitions() {
-
-    }
-
-    @Override
-    public void requestReportTransitions() {
-
-    }
-
-    @Override
-    public void depositValueAccount() {
-
-    }
 }

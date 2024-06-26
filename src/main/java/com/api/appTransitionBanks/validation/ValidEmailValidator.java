@@ -22,7 +22,7 @@ public class ValidEmailValidator implements ConstraintValidator<ValidEMAIL, Stri
         var isValid = true;
         var bundle = getBundle("ValidationMessages", getDefault());
         if(individualPersonService.existBy(EMAIL.existBy(List.of(value)))){
-            context.buildConstraintViolationWithTemplate("user.email.exist").addConstraintViolation();
+            context.buildConstraintViolationWithTemplate(bundle.getString("user.email.exist")).addConstraintViolation();
             isValid = false;
         }
 

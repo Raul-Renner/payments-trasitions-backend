@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.api.appTransitionBanks.fieldQueries.IndividualPersonFieldQuery.valueOf;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -29,9 +31,9 @@ public class IndividualPersonController {
 
     @CrossOrigin
     @DeleteMapping("{id}")
-    public ResponseEntity delete(@PathVariable String id) {
+    public ResponseEntity delete(@PathVariable @Valid String id) {
         try {
-            individualPersonService.deleteAccount(id);
+            individualPersonService.deleteProfile(id);
             return ResponseEntity.ok(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("tes", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -42,5 +44,12 @@ public class IndividualPersonController {
     @GetMapping
     public ResponseEntity<List<IndividualPerson>> findAll() {
         return ResponseEntity.ok(individualPersonService.findAll());
+    }
+
+    @CrossOrigin
+    @GetMapping("/find-by")
+    public ResponseEntity<?> findBy(@RequestParam String field, @RequestParam List<String> values) {
+        log.info("Searching person individual user by {} = {}.", field, values);
+        return ResponseEntity.ok(individualPersonService.findBy(valueOf(field).findBy(values)));
     }
 }

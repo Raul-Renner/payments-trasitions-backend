@@ -1,5 +1,6 @@
 package com.api.appTransitionBanks.validation;
 
+import jakarta.validation.ConstraintViolation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -17,7 +18,7 @@ public final class MessageValidation implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final String fieldName;
+    private String fieldName;
 
     private final String message;
 
@@ -27,6 +28,15 @@ public final class MessageValidation implements Serializable {
         else
             this.fieldName = error.getObjectName();
         this.message = error.getDefaultMessage();
+    }
+
+    public MessageValidation(ConstraintViolation error) {
+        this.message = error.getMessage();
+        this.fieldName = error.getPropertyPath().toString();
+    }
+
+    public MessageValidation(String message) {
+        this.message = message;
     }
 
 }

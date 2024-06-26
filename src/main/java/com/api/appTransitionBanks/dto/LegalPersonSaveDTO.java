@@ -1,16 +1,16 @@
 package com.api.appTransitionBanks.dto;
 
-import com.api.appTransitionBanks.entities.IndividualPerson;
 import com.api.appTransitionBanks.entities.LegalPerson;
 import com.api.appTransitionBanks.entities.UserInformation;
 import com.api.appTransitionBanks.enums.ProfileEnum;
+import com.api.appTransitionBanks.validation.ValidCNPJ;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+
+import java.io.Serializable;
 
 @Builder
 public record LegalPersonSaveDTO(
@@ -27,11 +27,15 @@ public record LegalPersonSaveDTO(
 
 //        String login,
 
+        @NotBlank(message = "{user.pj.name.corporation.notblank}")
+        String corporateReason,
+
+        @ValidCNPJ
         @NotBlank(message = "CNPJ é obrigatório")
         @Pattern(regexp = "(^\\d{2}.\\d{3}.\\d{3}/\\d{4}-\\d{2}$)")
         @Size(min = 18, max = 18, message = "CNPJ deve conter entre 14 numeros")
         String cnpj
-) {
+) implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -39,6 +43,7 @@ public record LegalPersonSaveDTO(
         var personPj = new LegalPerson();
         personPj.setCnpj(cnpj);
         personPj.setProfile(profile);
+        personPj.setCorporateReason(corporateReason);
         personPj.setUserInformation(
                 UserInformation.builder()
                         .email(email)

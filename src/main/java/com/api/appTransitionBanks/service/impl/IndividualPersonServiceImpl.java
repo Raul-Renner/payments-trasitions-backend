@@ -5,6 +5,7 @@ import com.api.appTransitionBanks.repository.IndividualPersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,16 +21,23 @@ public class IndividualPersonServiceImpl {
 
     private final BankAccountService bankAccountService;
 
+    @Transactional(rollbackFor = { Exception.class, Throwable.class })
     public void save(IndividualPerson person){
         person.setBankAccount(bankAccountService.createAccountBanking(FISICA));
         individualPersonRepository.insert(person);
+    }
+
+    @Transactional(readOnly = true)
+    public IndividualPerson findBy(Example<IndividualPerson> example) {
+        return individualPersonRepository.findOne(example).orElse(null);
     }
 
     public void transferMoney(){
 
     }
 
-    public void deleteAccount(String id){
+    @Transactional(rollbackFor = { Exception.class, Throwable.class })
+    public void deleteProfile(String id){
         try {
             individualPersonRepository.deleteById(id);
         } catch (Exception e) {

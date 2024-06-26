@@ -1,11 +1,10 @@
 package com.api.appTransitionBanks.enums;
 
-import lombok.Getter;
 
 public enum ProfileEnum {
 
-    FISICO("FISICO"),
-    JURIDICO("JURIDICO");
+    FISICA("FISICA"),
+    JURIDICA("JURIDICA");
 
 
     private final String role;

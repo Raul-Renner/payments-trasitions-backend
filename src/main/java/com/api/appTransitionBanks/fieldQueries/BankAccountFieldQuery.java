@@ -17,8 +17,11 @@ public enum BankAccountFieldQuery {
         }
 
         @Override
-        public Example<BankAccount> findBy(String values) {
-            return null;
+        public Example<BankAccount> findBy(String value) {
+            var bankAccount = BankAccount.builder()
+                    .numberAccount(value)
+                    .build();
+            return of(bankAccount, matchingAny());
         }
     };
 
