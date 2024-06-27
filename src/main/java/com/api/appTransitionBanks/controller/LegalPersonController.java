@@ -5,13 +5,14 @@ import com.api.appTransitionBanks.service.impl.LegalPersonServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 import static com.api.appTransitionBanks.fieldQueries.LegalPersonFieldQuery.valueOf;
+import static java.util.Locale.getDefault;
+import static java.util.ResourceBundle.getBundle;
 
 @Slf4j
 @RestController
@@ -21,11 +22,14 @@ public class LegalPersonController {
 
     private final LegalPersonServiceImpl legalPersonService;
 
+
+
     @CrossOrigin
     @PostMapping
     public ResponseEntity save(@Valid @RequestBody LegalPersonSaveDTO legalPersonSaveDTO){
+        var bundle = getBundle("ValidationMessages", getDefault());
         legalPersonService.save(legalPersonSaveDTO.toEntity());
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(bundle.getString("user.cnpj.create.success"));
     }
 
     @CrossOrigin

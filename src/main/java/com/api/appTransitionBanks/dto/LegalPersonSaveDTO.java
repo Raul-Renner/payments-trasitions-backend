@@ -4,6 +4,7 @@ import com.api.appTransitionBanks.entities.LegalPerson;
 import com.api.appTransitionBanks.entities.UserInformation;
 import com.api.appTransitionBanks.enums.ProfileEnum;
 import com.api.appTransitionBanks.validation.ValidCNPJ;
+import com.api.appTransitionBanks.validation.ValidEMAIL;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -17,6 +18,7 @@ public record LegalPersonSaveDTO(
 
         ProfileEnum profile,
 
+        @ValidEMAIL
         @NotBlank(message = "Email é obrigatório.")
         @Pattern(regexp = "^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$", message = "EMAIL INVALIDO")
         String email,
@@ -35,6 +37,7 @@ public record LegalPersonSaveDTO(
         @Pattern(regexp = "(^\\d{2}.\\d{3}.\\d{3}/\\d{4}-\\d{2}$)")
         @Size(min = 18, max = 18, message = "CNPJ deve conter entre 14 numeros")
         String cnpj
+
 ) implements Serializable {
 
     private static final long serialVersionUID = 1L;

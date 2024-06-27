@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.api.appTransitionBanks.enums.TypeAccount.JURIDICA;
+import static java.util.Locale.getDefault;
+import static java.util.ResourceBundle.getBundle;
 
 @Service
 @RequiredArgsConstructor
@@ -17,10 +19,18 @@ public class LegalPersonServiceImpl {
 
     private final BankAccountService bankAccountService;
 
+
     @Transactional(rollbackFor = { Exception.class, Throwable.class })
     public void save(LegalPerson legalPerson){
-        legalPerson.setBankAccount(bankAccountService.createAccountBanking(JURIDICA));
-        legalRepository.insert(legalPerson);
+        var bundle = getBundle("ValidationMessages", getDefault());
+
+        try {
+            legalPerson.setBankAccount(bankAccountService.createAccountBanking(JURIDICA));
+            legalRepository.insert(legalPerson);
+        } catch (Exception e) {
+            throw new RuntimeException(bundle.getString("error.register"));
+        }
+
     }
 
     @Transactional(rollbackFor = { Exception.class, Throwable.class })
@@ -33,7 +43,8 @@ public class LegalPersonServiceImpl {
         try {
             legalRepository.deleteById(id);
         } catch (Exception e) {
-
+            var bundle = getBundle("ValidationMessages", getDefault());
+            throw new RuntimeException(bundle.getString("error.delete.user"));
         }
     }
 
