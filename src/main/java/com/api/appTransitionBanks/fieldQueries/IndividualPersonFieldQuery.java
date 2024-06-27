@@ -2,7 +2,9 @@ package com.api.appTransitionBanks.fieldQueries;
 
 import com.api.appTransitionBanks.entities.BankAccount;
 import com.api.appTransitionBanks.entities.IndividualPerson;
+import com.api.appTransitionBanks.entities.LegalPerson;
 import com.api.appTransitionBanks.entities.UserInformation;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Example;
 
 import java.util.List;
@@ -14,6 +16,22 @@ import static org.springframework.data.domain.ExampleMatcher.matchingAny;
 import static org.springframework.data.domain.Example.of;
 
 public enum IndividualPersonFieldQuery {
+
+
+    INDIVIDUAL_PERSON_ID{
+        @Override
+        public Example<IndividualPerson> existBy(List<String> values) {
+            var individualPerson = new IndividualPerson();
+            individualPerson.set_id(new ObjectId(values.get(0)));
+            return of(individualPerson, matchingAny());
+        }
+
+        @Override
+        public Example<IndividualPerson> findBy(List<String> values) {
+            return null;
+        }
+    },
+
     CPF_NUMBER_ACCOUNT{
         @Override
         public Example<IndividualPerson> existBy(List<String> values) {
