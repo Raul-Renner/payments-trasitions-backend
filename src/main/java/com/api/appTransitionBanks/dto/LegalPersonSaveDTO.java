@@ -13,6 +13,8 @@ import lombok.Builder;
 
 import java.io.Serializable;
 
+import static com.api.appTransitionBanks.enums.ProfileEnum.JURIDICA;
+
 @Builder
 public record LegalPersonSaveDTO(
 
@@ -47,6 +49,7 @@ public record LegalPersonSaveDTO(
         personPj.setCnpj(cnpj);
         personPj.setProfile(profile);
         personPj.setCorporateReason(corporateReason);
+        personPj.setProfile(JURIDICA);
         personPj.setUserInformation(
                 UserInformation.builder()
                         .email(email)

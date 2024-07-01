@@ -2,7 +2,6 @@ package com.api.appTransitionBanks.fieldQueries;
 
 import com.api.appTransitionBanks.entities.BankAccount;
 import com.api.appTransitionBanks.entities.IndividualPerson;
-import com.api.appTransitionBanks.entities.LegalPerson;
 import com.api.appTransitionBanks.entities.UserInformation;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Example;
@@ -31,7 +30,22 @@ public enum IndividualPersonFieldQuery {
             return null;
         }
     },
+    ACCOUNT {
+        @Override
+        public Example<IndividualPerson> existBy(List<String> values) {
+            var individualPerson = new IndividualPerson();
+            individualPerson.setBankAccount(BankAccount.builder().numberAccount(values.get(0)).build());
+            return of(individualPerson, matchingAny());
+        }
 
+        @Override
+        public Example<IndividualPerson> findBy(List<String> values) {
+            var individualPerson = new IndividualPerson();
+            individualPerson.setBankAccount(BankAccount.builder().numberAccount(values.get(0)).build());
+
+            return of(individualPerson, matchingAny());
+        }
+    },
     CPF_NUMBER_ACCOUNT{
         @Override
         public Example<IndividualPerson> existBy(List<String> values) {
@@ -64,6 +78,7 @@ public enum IndividualPersonFieldQuery {
             return null;
         }
     },
+
     EMAIL{
         @Override
         public Example<IndividualPerson> existBy(List<String> values) {

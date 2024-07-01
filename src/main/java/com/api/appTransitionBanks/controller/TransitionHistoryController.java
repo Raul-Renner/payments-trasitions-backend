@@ -1,7 +1,7 @@
 package com.api.appTransitionBanks.controller;
 
 import com.api.appTransitionBanks.dto.PersonDTO;
-import com.api.appTransitionBanks.service.impl.TransitionsHistoryImpl;
+import com.api.appTransitionBanks.service.impl.TransitionsHistoryServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/transitions")
 public class TransitionHistoryController {
 
-    private final TransitionsHistoryImpl transitionsHistory;
+    private final TransitionsHistoryServiceImpl transitionsHistory;
 
     @CrossOrigin
     @GetMapping

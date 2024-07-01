@@ -3,7 +3,6 @@ package com.api.appTransitionBanks.fieldQueries;
 import com.api.appTransitionBanks.entities.BankAccount;
 import com.api.appTransitionBanks.entities.LegalPerson;
 import com.api.appTransitionBanks.entities.UserInformation;
-import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Example;
 
@@ -28,6 +27,23 @@ public enum LegalPersonFieldQuery {
         @Override
         public Example<LegalPerson> findBy(List<String> values) {
             return null;
+        }
+    },
+
+    ACCOUNT {
+        @Override
+        public Example<LegalPerson> existBy(List<String> values) {
+            var legalPerson = new LegalPerson();
+            legalPerson.setBankAccount(BankAccount.builder().numberAccount(values.get(0)).build());
+            return of(legalPerson, matchingAny());
+        }
+
+        @Override
+        public Example<LegalPerson> findBy(List<String> values) {
+            var legalPerson = new LegalPerson();
+            legalPerson.setBankAccount(BankAccount.builder().numberAccount(values.get(0)).build());
+
+            return of(legalPerson, matchingAny());
         }
     },
     CPNJ_NUMBER_ACCOUNT{

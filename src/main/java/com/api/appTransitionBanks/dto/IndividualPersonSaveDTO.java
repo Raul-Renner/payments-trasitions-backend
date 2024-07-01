@@ -9,6 +9,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import static com.api.appTransitionBanks.enums.ProfileEnum.FISICA;
+
 
 public record IndividualPersonSaveDTO (
 
@@ -38,6 +40,7 @@ public record IndividualPersonSaveDTO (
         var personPf = new IndividualPerson();
         personPf.setCpf(cpf);
         personPf.setProfile(profile);
+        personPf.setProfile(FISICA);
         personPf.setUserInformation(
                 UserInformation.builder()
                         .email(email)

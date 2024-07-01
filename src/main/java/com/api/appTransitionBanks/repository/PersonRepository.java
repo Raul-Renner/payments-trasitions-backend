@@ -9,6 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 @EnableMongoRepositories
 public interface PersonRepository extends MongoRepository<Person, String> {
-    Person findBy_id(String id);
 
 }

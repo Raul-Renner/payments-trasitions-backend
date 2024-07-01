@@ -28,7 +28,7 @@ public class TransitionsHistory implements Serializable {
 
     private Double valueTransition;
 
-    private Boolean status;
+//    private Boolean status;
 
     private Date date;
 

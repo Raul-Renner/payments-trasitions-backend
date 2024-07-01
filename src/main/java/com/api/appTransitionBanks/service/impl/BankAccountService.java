@@ -2,6 +2,8 @@ package com.api.appTransitionBanks.service.impl;
 
 import com.api.appTransitionBanks.dto.TransferDTO;
 import com.api.appTransitionBanks.entities.BankAccount;
+import com.api.appTransitionBanks.entities.MenuNotification;
+import com.api.appTransitionBanks.entities.TransitionsHistory;
 import com.api.appTransitionBanks.enums.TypeAccount;
 import com.api.appTransitionBanks.repository.BankRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,11 +11,25 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
+import static com.api.appTransitionBanks.enums.NotificationTypeEnum.TRANSITION;
+import static com.api.appTransitionBanks.enums.TransitionsTypeEnum.TRANSFER;
+import static java.util.Locale.getDefault;
+import static java.util.ResourceBundle.getBundle;
+
 @Service
 @RequiredArgsConstructor
 public class BankAccountService {
 
     private final BankRepository bankRepository;
+
+    private final TransitionsHistoryServiceImpl transitionsHistoryService;
+
+    private final NotificationServiceImpl notificationService;
+
+    private final UserServiceImpl userService;
+
 
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
     public BankAccount createAccountBanking(TypeAccount typeAccount){
@@ -27,6 +43,8 @@ public class BankAccountService {
 
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
     public void executetTransfer(TransferDTO transferDTO){
+        var bundle = getBundle("ValidationMessages", getDefault());
+
         try {
             var accountReceive = bankRepository.findByNumberAccount(transferDTO.accountReceiver());
             accountReceive.setBalance(accountReceive.getBalance() + transferDTO.valueTransfer());
@@ -35,6 +53,30 @@ public class BankAccountService {
 
             update(accountReceive);
             update(accountSender);
+
+            var userSender = userService.findBy(transferDTO.accountSender());
+            var userReceiver = userService.findBy(transferDTO.accountReceiver());
+
+            transitionsHistoryService.save(
+                    TransitionsHistory.builder()
+                            .transitionsTypeEnum(TRANSFER)
+                            .valueTransition(transferDTO.valueTransfer())
+                            .personSender(userSender)
+                            .personReceiver(userReceiver)
+                            .date(new Date())
+                            .description(bundle.getString("description-part1") + userSender.getUserInformation().getName() + " "
+                            + userSender.getUserInformation().getLastname() + bundle.getString("description-part2") + " " + transferDTO.valueTransfer())
+                            .build());
+
+            notificationService.save(MenuNotification.builder()
+                            .notificationType(TRANSITION)
+                            .created(new Date())
+                            .person(userReceiver)
+                            .message(bundle.getString("description-part1") + userSender.getUserInformation().getName() + " "
+                                    + userSender.getUserInformation().getLastname() + bundle.getString("description-part2") + " " + transferDTO.valueTransfer())
+                            .isNotified(false)
+                            .build());
+
 
         }catch (Exception e){
             throw new RuntimeException("Erro ao executar transferencia!");

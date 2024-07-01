@@ -7,7 +7,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.api.appTransitionBanks.enums.TypeAccount.JURIDICA;
 import static java.util.Locale.getDefault;
 import static java.util.ResourceBundle.getBundle;
 
@@ -17,15 +16,10 @@ public class LegalPersonServiceImpl {
 
     private final PersonLegalRepository legalRepository;
 
-    private final BankAccountService bankAccountService;
-
-
     @Transactional(rollbackFor = { Exception.class, Throwable.class })
     public void save(LegalPerson legalPerson){
         var bundle = getBundle("ValidationMessages", getDefault());
-
         try {
-            legalPerson.setBankAccount(bankAccountService.createAccountBanking(JURIDICA));
             legalRepository.insert(legalPerson);
         } catch (Exception e) {
             throw new RuntimeException(bundle.getString("error.register"));
