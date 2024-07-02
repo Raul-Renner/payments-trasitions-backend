@@ -1,5 +1,6 @@
 package com.api.appTransitionBanks.service.impl;
 
+import com.api.appTransitionBanks.dto.DepositeDTO;
 import com.api.appTransitionBanks.dto.TransferDTO;
 import com.api.appTransitionBanks.entities.BankAccount;
 import com.api.appTransitionBanks.entities.MenuNotification;
@@ -107,6 +108,13 @@ public class BankAccountService {
     @Transactional(readOnly = true)
     public BankAccount findBy(Example<BankAccount> example) {
         return bankRepository.findOne(example).orElse(null);
+    }
+
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
+    public void realizeDeposite(DepositeDTO depositeDTO){
+        var accountSender = bankRepository.findByNumberAccount(depositeDTO.accountSender());
+        accountSender.setBalance(accountSender.getBalance() + depositeDTO.valueDeposit());
+        update(accountSender);
     }
 
     private String randomNumbers(int qtdNumber){

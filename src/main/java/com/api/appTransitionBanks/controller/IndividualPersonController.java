@@ -36,7 +36,7 @@ public class IndividualPersonController {
             individualPersonService.deleteProfile(id);
             return ResponseEntity.ok(HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("tes", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Error deletar person", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
