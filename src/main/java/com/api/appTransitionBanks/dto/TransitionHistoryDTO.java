@@ -7,9 +7,9 @@ import lombok.Builder;
 public record TransitionHistoryDTO (
         TransitionsTypeEnum transitionsTypeEnum,
 
-        String numberAccountReceiver,
+        BankAccountDTO accountReceiver,
 
-        String numberAccountPersonSender,
+        BankAccountDTO accountPersonSender,
 
         Double valueTransition
 ){}

@@ -16,18 +16,4 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserServiceImpl userService;
-
-    @CrossOrigin
-    @DeleteMapping("{id}")
-    public ResponseEntity delete(@RequestBody @Valid PersonDTO personDTO) {
-        try {
-            userService.deleteProfile(personDTO);
-            return ResponseEntity.ok(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("tes", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
 }
