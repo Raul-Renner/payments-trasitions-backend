@@ -5,10 +5,10 @@ import com.api.appTransitionBanks.validation.ValidNumberAccountSender;
 
 public record TransferDTO (
 
-        String accountReceiver,
+        BankAccountDTO accountReceiver,
 
         @ValidNumberAccountSender
-        String accountSender,
+        BankAccountDTO accountSender,
 
         @ValidBalance
         Double valueTransfer

@@ -1,35 +1,33 @@
 package com.api.appTransitionBanks.validation;
 
-import com.api.appTransitionBanks.fieldQueries.IndividualPersonFieldQuery;
+import com.api.appTransitionBanks.dto.BankAccountDTO;
 import com.api.appTransitionBanks.service.impl.BankAccountService;
-import com.api.appTransitionBanks.service.impl.IndividualPersonServiceImpl;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static com.api.appTransitionBanks.enums.TypeAccount.JURIDICA;
 import static com.api.appTransitionBanks.fieldQueries.BankAccountFieldQuery.ACCOUNT;
 import static java.util.Locale.getDefault;
 import static java.util.ResourceBundle.getBundle;
 
 @RequiredArgsConstructor
-public class ValidNumberAccountSenderValidator implements ConstraintValidator<ValidNumberAccountSender ,String> {
+public class ValidNumberAccountSenderValidator implements ConstraintValidator<ValidNumberAccountSender , BankAccountDTO> {
 
     private final BankAccountService bankAccountService;
 
-    private final IndividualPersonServiceImpl individualPersonService;
-
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
+    public boolean isValid(BankAccountDTO value, ConstraintValidatorContext context) {
         context.disableDefaultConstraintViolation();
         var isValid = true;
         var bundle = getBundle("ValidationMessages", getDefault());
 
-        if(!bankAccountService.existBy(ACCOUNT.existBy(List.of(value)))){
+        if(!bankAccountService.existBy(ACCOUNT.existBy(List.of(value.numberAccount())))){
             context.buildConstraintViolationWithTemplate(bundle.getString("accountNumber.notfound")).addConstraintViolation();
             isValid = false;
-        } else if(!individualPersonService.existBy(IndividualPersonFieldQuery.ACCOUNT.existBy(List.of(value)))){
+        } else if(value.typeAccount().equals(JURIDICA)){
             context.buildConstraintViolationWithTemplate(bundle.getString("account.individual.unathorized")).addConstraintViolation();
             isValid = false;
         }

@@ -19,19 +19,8 @@ public abstract class Person implements Serializable {
     @Id
     private ObjectId _id;
 
-//    @Column
-//    private String numberAccount;
-
-//    private String password;
-
     private ProfileEnum profile;
-
-    private BankAccount bankAccount;
 
     private UserInformation userInformation;
 
-//    @ManyToOne
-//    @JsonIgnore
-//    @JoinColumn(name = "id_bank")
-//    private Bank bank;
 }

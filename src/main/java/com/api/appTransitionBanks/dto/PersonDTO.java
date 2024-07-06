@@ -9,9 +9,7 @@ public record PersonDTO (
         @ValidPersonId
         String id,
 
-        ProfileEnum profile,
-
-        BankAccountDTO bankAccountDTO
+        ProfileEnum profile
 
 ){}
 

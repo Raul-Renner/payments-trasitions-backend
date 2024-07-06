@@ -1,7 +1,7 @@
 package com.api.appTransitionBanks.service.impl;
 
+import com.api.appTransitionBanks.entities.BankAccount;
 import com.api.appTransitionBanks.entities.IndividualPerson;
-import com.api.appTransitionBanks.enums.TypeAccount;
 import com.api.appTransitionBanks.repository.IndividualPersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
@@ -24,9 +24,16 @@ public class IndividualPersonServiceImpl {
 
     @Transactional(rollbackFor = { Exception.class, Throwable.class })
     public void save(IndividualPerson person){
-       var userCopy = individualPersonRepository.insert(person);
-       userCopy.setBankAccount(bankAccountService.createAccountBanking(FISICA));
-       update(userCopy);
+        try {
+            var userCopy = individualPersonRepository.insert(person);
+            bankAccountService.createAccountBanking(BankAccount.builder()
+                    .person(userCopy)
+                    .typeAccount(FISICA)
+                    .build());
+        } catch (Exception e) {
+            throw new RuntimeException("Error while saving IndividualPerson", e);
+        }
+
     }
 
     @Transactional(rollbackFor = { Exception.class, Throwable.class })

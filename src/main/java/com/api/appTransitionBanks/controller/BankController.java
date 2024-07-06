@@ -9,10 +9,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 import static com.api.appTransitionBanks.fieldQueries.BankAccountFieldQuery.valueOf;
+import static java.util.Locale.getDefault;
+import static java.util.Objects.nonNull;
+import static java.util.ResourceBundle.getBundle;
 
 @Slf4j
 @CrossOrigin
@@ -23,13 +27,11 @@ public class BankController {
 
     private final BankAccountService bankAccountService;
 
-
     @GetMapping("authorize")
     public ResponseEntity authorizeTransfer(@Valid @RequestBody TransferDTO transferDTO) {
         var result = bankAccountService.authorizeTransfer(transferDTO);
         return result ? ResponseEntity.ok(true) : ResponseEntity.badRequest().body(false);
     }
-
 
     @GetMapping("exist")
     public ResponseEntity<?> existBy(@RequestParam String field, @RequestParam List<String> values) {
@@ -37,18 +39,22 @@ public class BankController {
         return result ? ResponseEntity.ok(result) : ResponseEntity.badRequest().body(result);
     }
 
-
     @PostMapping("transfer-realize")
     public ResponseEntity realizeTransfer(@RequestBody @Valid TransferDTO transferDTO) {
         bankAccountService.executetTransfer(transferDTO);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-
     @GetMapping("/find-by")
-    public ResponseEntity<?> findBy(@RequestParam String field, @RequestParam String value) {
-        log.info("Searching account user by {} = {}.", field, value);
-        return ResponseEntity.ok(bankAccountService.findBy(valueOf(field).findBy(value)));
+    public ResponseEntity<?> findBy(@RequestParam String field, @RequestParam List<String> values) {
+        try {
+            var bundle = getBundle("ValidationMessages", getDefault());
+            log.info("Searching account user by {} = {}.", field, values);
+            var result = bankAccountService.findBy(valueOf(field).findBy(values));
+            return nonNull(result) ? ResponseEntity.ok(result) : ResponseEntity.badRequest().body(bundle.getString("user.notfound"));
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
     @PostMapping("deposite")
