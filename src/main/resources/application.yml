@@ -7,3 +7,6 @@ spring:
       port: 27017
       database: banksDatabase
       authentication-database: admin
+  demo-payments:
+    openapi:
+      dev-url: http://localhost:8080

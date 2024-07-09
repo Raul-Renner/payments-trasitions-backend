@@ -51,7 +51,7 @@ public class IndividualPersonServiceImpl {
         try {
             individualPersonRepository.deleteById(id);
         } catch (Exception e) {
-
+            throw new RuntimeException("Error while deleting IndividualPerson", e);
         }
     }
 

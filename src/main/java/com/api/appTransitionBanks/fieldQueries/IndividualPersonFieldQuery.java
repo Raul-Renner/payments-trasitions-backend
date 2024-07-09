@@ -23,7 +23,9 @@ public enum IndividualPersonFieldQuery {
 
         @Override
         public Example<IndividualPerson> findBy(List<String> values) {
-            return null;
+            var individualPerson = new IndividualPerson();
+            individualPerson.set_id(new ObjectId(values.get(0)));
+            return of(individualPerson, matchingAny());
         }
     },
     CPF {

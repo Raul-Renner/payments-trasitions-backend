@@ -92,9 +92,10 @@ public class BankAccountService {
 
 
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
-    public Boolean authorizeTransfer(TransferDTO transferDTO){
-        var accountSender = bankRepository.findByNumberAccount(transferDTO.accountSender().numberAccount());
-        return accountSender.getBalance() > 0 && accountSender.getBalance() >= transferDTO.valueTransfer();
+    public Boolean authorizeTransfer(String numberAccountSender, Double valueTransfer){
+        var accountSender = bankRepository.findByNumberAccount(numberAccountSender);
+        return accountSender.getBalance() > 0 && accountSender.getBalance() >= valueTransfer
+                && accountSender.getTypeAccount().name().equals("FISICA");
     }
 
     @Transactional(readOnly = true)
