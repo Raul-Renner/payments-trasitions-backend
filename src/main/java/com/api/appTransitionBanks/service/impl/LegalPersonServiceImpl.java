@@ -40,15 +40,6 @@ public class LegalPersonServiceImpl {
         return legalRepository.exists(example);
     }
 
-    @Transactional(rollbackFor = { Exception.class, Throwable.class })
-    public void deleteProfile(String id){
-        try {
-            legalRepository.deleteById(id);
-        } catch (Exception e) {
-            var bundle = getBundle("ValidationMessages", getDefault());
-            throw new RuntimeException(bundle.getString("error.delete.user"));
-        }
-    }
 
     @Transactional(readOnly = true)
     public LegalPerson findBy(Example<LegalPerson> example) {

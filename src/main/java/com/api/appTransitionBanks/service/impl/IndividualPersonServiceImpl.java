@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.api.appTransitionBanks.enums.TypeAccount.FISICA;
 
@@ -44,20 +43,6 @@ public class IndividualPersonServiceImpl {
     @Transactional(readOnly = true)
     public IndividualPerson findBy(Example<IndividualPerson> example) {
         return individualPersonRepository.findOne(example).orElse(null);
-    }
-
-    @Transactional(rollbackFor = { Exception.class, Throwable.class })
-    public void deleteProfile(String id){
-        try {
-            individualPersonRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new RuntimeException("Error while deleting IndividualPerson", e);
-        }
-    }
-
-    @Transactional(rollbackFor = { Exception.class, Throwable.class })
-    public Optional<IndividualPerson> findById(String id){
-        return individualPersonRepository.findById(id);
     }
 
     @Transactional(rollbackFor = { Exception.class, Throwable.class })

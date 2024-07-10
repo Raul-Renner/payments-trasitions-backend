@@ -130,5 +130,24 @@ public class BankController {
         bankAccountService.realizeDeposite(depositeDTO);
         return ResponseEntity.ok(HttpStatus.OK);
     }
+
+    @Operation(
+            summary = "Delete account bank by number account",
+            description = "Delete account bank person by number account registered in system",
+            tags = {"delete"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Account bank DELETE with success",content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "404", description = "No account bank registered in system"),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(defaultValue = "Server Error"))})
+    })
+    @DeleteMapping("{numberAccount}")
+    public ResponseEntity delete(@PathVariable @Valid String numberAccount) {
+        try {
+            bankAccountService.delete(numberAccount);
+            return ResponseEntity.ok(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error deletar Account Bank", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
 

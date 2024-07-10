@@ -47,28 +47,6 @@ public class IndividualPersonController {
     }
 
 
-
-    @Operation(
-            summary = "Delete account bank person individual by ID",
-            description = "Delete account bank person individual by ID registered in system",
-            tags = {"delete", "DELETE"})
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Account bank DELETE with success",content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
-            @ApiResponse(responseCode = "404", description = "No account bank person individual registered in system"),
-            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(defaultValue = "Server Error"))})
-    })
-    @DeleteMapping("{id}")
-    public ResponseEntity delete(@PathVariable @Valid String id) {
-        try {
-            individualPersonService.deleteProfile(id);
-            return ResponseEntity.ok(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Error deletar person", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
-
     @Operation(
             summary = "Get all person individual",
             description = "Get all account bank person individual registered in system",

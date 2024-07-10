@@ -2,20 +2,23 @@ package com.api.appTransitionBanks.service.impl;
 
 import com.api.appTransitionBanks.dto.DepositeDTO;
 import com.api.appTransitionBanks.dto.TransferDTO;
-import com.api.appTransitionBanks.entities.BankAccount;
-import com.api.appTransitionBanks.entities.MenuNotification;
-import com.api.appTransitionBanks.entities.TransitionsHistory;
+import com.api.appTransitionBanks.entities.*;
 
 import com.api.appTransitionBanks.repository.BankRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 import static com.api.appTransitionBanks.enums.NotificationTypeEnum.TRANSITION;
 import static com.api.appTransitionBanks.enums.TransitionsTypeEnum.TRANSFER;
+import static com.api.appTransitionBanks.fieldQueries.BankAccountFieldQuery.ACCOUNT;
 import static java.util.Locale.getDefault;
 import static java.util.ResourceBundle.getBundle;
 
@@ -29,7 +32,7 @@ public class BankAccountService {
     private final TransitionsHistoryServiceImpl transitionsHistoryService;
 
     private final NotificationServiceImpl notificationService;
-
+    private final MongoTemplate mongoTemplate;
 
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
     public void createAccountBanking(BankAccount bankAccount){
@@ -114,6 +117,25 @@ public class BankAccountService {
         accountSender.setBalance(accountSender.getBalance() + depositeDTO.valueDeposit());
         update(accountSender);
     }
+
+    @Transactional(rollbackFor = { Exception.class, Throwable.class })
+    public void delete(String numberAccount){
+        try {
+            var bankDelete = findBy(ACCOUNT.findBy(List.of(numberAccount)));
+            var userDeleteId = bankDelete.getPerson().get_id();
+
+            switch (bankDelete.getTypeAccount()){
+                case JURIDICA -> mongoTemplate.remove(new Query(Criteria.where("_id").in(userDeleteId)), LegalPerson.class);
+                case FISICA -> mongoTemplate.remove(new Query(Criteria.where("_id").in(userDeleteId)), IndividualPerson.class);
+            }
+
+            bankRepository.delete(bankDelete);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while deleting Account Bank", e);
+        }
+    }
+
+
 
     private String randomNumbers(int qtdNumber){
         var chars = "0123456789";
