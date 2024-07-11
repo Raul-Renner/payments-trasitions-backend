@@ -44,7 +44,7 @@ public class LegalPersonController {
     @PostMapping
     public ResponseEntity save(@Valid @RequestBody LegalPersonSaveDTO legalPersonSaveDTO){
         var bundle = getBundle("ValidationMessages", getDefault());
-        legalPersonService.save(legalPersonSaveDTO.toEntity());
+        legalPersonService.processSave(legalPersonSaveDTO.toEntity());
         return ResponseEntity.ok(bundle.getString("user.cnpj.create.success"));
     }
 

@@ -5,6 +5,7 @@ import com.api.appTransitionBanks.entities.LegalPerson;
 import com.api.appTransitionBanks.repository.PersonLegalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,19 +21,35 @@ public class LegalPersonServiceImpl {
 
     private final BankAccountService bankAccountService;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Transactional(rollbackFor = { Exception.class, Throwable.class })
-    public void save(LegalPerson legalPerson){
+    public void processSave(LegalPerson legalPerson){
         var bundle = getBundle("ValidationMessages", getDefault());
         try {
-           var userCopy = legalRepository.insert(legalPerson);
-            bankAccountService.createAccountBanking(BankAccount.builder()
+           var userCopy = save(legalPerson);
+
+           var bankAccountCopy = bankAccountService.createAccountBanking(BankAccount.builder()
                     .person(userCopy)
                     .typeAccount(JURIDICA)
                     .build());
+
+          bankAccountCopy.setPasswordApp(passwordEncoder.encode(bankAccountCopy.getPasswordApp()));
+          bankAccountService.update(bankAccountCopy);
+
         } catch (Exception e) {
             throw new RuntimeException(bundle.getString("error.register"));
         }
 
+    }
+
+    @Transactional(rollbackFor = { Exception.class, Throwable.class })
+    public LegalPerson save(LegalPerson legalPerson){
+        try {
+            return legalRepository.insert(legalPerson);
+        } catch (Exception e){
+            throw new RuntimeException("Error saving LegalPerson");
+        }
     }
 
     @Transactional(rollbackFor = { Exception.class, Throwable.class })

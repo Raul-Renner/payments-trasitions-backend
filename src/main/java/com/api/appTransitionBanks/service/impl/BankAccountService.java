@@ -5,6 +5,7 @@ import com.api.appTransitionBanks.dto.TransferDTO;
 import com.api.appTransitionBanks.entities.*;
 
 import com.api.appTransitionBanks.repository.BankRepository;
+import com.api.appTransitionBanks.util.RandomNumber;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -32,14 +33,22 @@ public class BankAccountService {
     private final TransitionsHistoryServiceImpl transitionsHistoryService;
 
     private final NotificationServiceImpl notificationService;
+
     private final MongoTemplate mongoTemplate;
 
+    private final RandomNumber randomNumbers;
+
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
-    public void createAccountBanking(BankAccount bankAccount){
-        bankAccount.setNumberAccount(randomNumbers(7));
-        bankAccount.setPasswordApp(randomNumbers(6));
-        bankAccount.setBalance(0.0);
-        bankRepository.insert(bankAccount);
+    public BankAccount createAccountBanking(BankAccount bankAccount){
+        try{
+            bankAccount.setNumberAccount(randomNumbers.randomNumbers(7));
+            bankAccount.setPasswordApp(randomNumbers.randomNumbers(6));
+            bankAccount.setBalance(0.0);
+           return bankRepository.insert(bankAccount);
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating account banking account", e);
+        }
+
     }
 
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
@@ -134,22 +143,4 @@ public class BankAccountService {
             throw new RuntimeException("Error while deleting Account Bank", e);
         }
     }
-
-
-
-    private String randomNumbers(int qtdNumber){
-        var chars = "0123456789";
-        var numbers = "";
-        var digit = "";
-        for(int i = 0; i < qtdNumber; i++){
-            var caracter = (int) (Math.random() * chars.length());
-            numbers += chars.substring(caracter, caracter + 1);
-            digit = chars.substring(caracter, caracter + 1);
-        }
-        if(qtdNumber == 7){
-            numbers = numbers + "-" + digit;
-        }
-        return numbers;
-    }
-
 }

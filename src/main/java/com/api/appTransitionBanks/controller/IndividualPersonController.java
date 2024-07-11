@@ -42,7 +42,7 @@ public class IndividualPersonController {
     })
     @PostMapping
     public ResponseEntity save(@Valid @RequestBody IndividualPersonSaveDTO personSaveDTO){
-            individualPersonService.save(personSaveDTO.toEntity());
+            individualPersonService.processSave(personSaveDTO.toEntity());
             return ResponseEntity.ok(HttpStatus.OK);
     }
 

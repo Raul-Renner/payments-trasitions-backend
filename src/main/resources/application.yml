@@ -10,3 +10,12 @@ spring:
   demo-payments:
     openapi:
       dev-url: http://localhost:8080
+
+  security:
+    jwt:
+      token:
+        secret: ${JWT_SECRET:secret}
+
+  devtools:
+    restart:
+      enabled: false

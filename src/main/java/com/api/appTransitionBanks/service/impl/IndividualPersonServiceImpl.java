@@ -5,6 +5,7 @@ import com.api.appTransitionBanks.entities.IndividualPerson;
 import com.api.appTransitionBanks.repository.IndividualPersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,18 +22,32 @@ public class IndividualPersonServiceImpl {
 
     private final BankAccountService bankAccountService;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Transactional(rollbackFor = { Exception.class, Throwable.class })
-    public void save(IndividualPerson person){
+    public void processSave(IndividualPerson person){
         try {
-            var userCopy = individualPersonRepository.insert(person);
-            bankAccountService.createAccountBanking(BankAccount.builder()
+            var userCopy = save(person);
+            var bankAccountCopy = bankAccountService.createAccountBanking(BankAccount.builder()
                     .person(userCopy)
                     .typeAccount(FISICA)
                     .build());
+
+            bankAccountCopy.setPasswordApp(passwordEncoder.encode(bankAccountCopy.getPasswordApp()));
+            bankAccountService.update(bankAccountCopy);
         } catch (Exception e) {
             throw new RuntimeException("Error while saving IndividualPerson", e);
         }
 
+    }
+
+    @Transactional(rollbackFor = { Exception.class, Throwable.class })
+    public IndividualPerson save(IndividualPerson person){
+        try {
+            return individualPersonRepository.insert(person);
+        } catch (Exception e){
+            throw new RuntimeException("Error while saving IndividualPerson", e);
+        }
     }
 
     @Transactional(rollbackFor = { Exception.class, Throwable.class })
