@@ -9,7 +9,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static com.api.appTransitionBanks.enums.TypeAccount.JURIDICA;
+import static com.api.appTransitionBanks.fieldQueries.LegalPersonFieldQuery.CNPJ;
 import static java.util.Locale.getDefault;
 import static java.util.ResourceBundle.getBundle;
 
@@ -49,6 +52,30 @@ public class LegalPersonServiceImpl {
             return legalRepository.insert(legalPerson);
         } catch (Exception e){
             throw new RuntimeException("Error saving LegalPerson");
+        }
+    }
+
+    @Transactional(rollbackFor = { Exception.class, Throwable.class })
+    public void processUpdate(LegalPerson legalPerson){
+        var bundle = getBundle("ValidationMessages", getDefault());
+        try {
+            var userCopy = findBy(CNPJ.findBy(List.of(legalPerson.getCnpj())));
+            userCopy.getUserInformation().setEmail(legalPerson.getUserInformation().getEmail());
+            userCopy.getUserInformation().setName(legalPerson.getUserInformation().getName());
+            userCopy.getUserInformation().setLastname(legalPerson.getUserInformation().getLastname());
+            update(userCopy);
+        } catch (Exception e) {
+            throw new RuntimeException(bundle.getString("Error in process updating LegalPerson"));
+        }
+
+    }
+
+    @Transactional(rollbackFor = { Exception.class, Throwable.class })
+    public LegalPerson update(LegalPerson legalPerson){
+        try {
+            return legalRepository.save(legalPerson);
+        } catch (Exception e){
+            throw new RuntimeException("Error updating LegalPerson");
         }
     }
 

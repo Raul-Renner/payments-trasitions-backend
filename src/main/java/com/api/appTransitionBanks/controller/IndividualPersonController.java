@@ -1,6 +1,8 @@
 package com.api.appTransitionBanks.controller;
 
 import com.api.appTransitionBanks.dto.IndividualPersonSaveDTO;
+import com.api.appTransitionBanks.dto.IndividualPersonUpdateDTO;
+import com.api.appTransitionBanks.dto.LegalPersonUpdateDTO;
 import com.api.appTransitionBanks.entities.IndividualPerson;
 import com.api.appTransitionBanks.service.impl.IndividualPersonServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.api.appTransitionBanks.fieldQueries.IndividualPersonFieldQuery.valueOf;
+import static java.util.Locale.getDefault;
+import static java.util.ResourceBundle.getBundle;
 
 @Slf4j
 @CrossOrigin
@@ -61,6 +65,22 @@ public class IndividualPersonController {
         return ResponseEntity.ok(individualPersonService.findAll());
     }
 
+
+    @Operation(
+            summary = "update data a person individual",
+            description = "This endpoint is used to update data account bank to person individual",
+            tags = {"update"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = LegalPersonUpdateDTO.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(defaultValue = "Server Error"))})
+    })
+    @PutMapping
+    public ResponseEntity update(@Valid @RequestBody IndividualPersonUpdateDTO individualPersonUpdateDTO){
+        var bundle = getBundle("ValidationMessages", getDefault());
+        individualPersonService.processUpdate(individualPersonUpdateDTO.toEntity());
+        return ResponseEntity.ok(bundle.getString("user.update.success"));
+    }
 
 
     @Operation(

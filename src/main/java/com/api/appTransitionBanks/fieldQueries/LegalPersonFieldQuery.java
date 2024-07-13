@@ -52,6 +52,21 @@ public enum LegalPersonFieldQuery {
         public Example<LegalPerson> findBy(List<String> values) {
             return null;
         }
+    },
+    EMAIL_CNPJ{
+        @Override
+        public Example<LegalPerson> existBy(List<String> values) {
+            var legalPerson = new LegalPerson();
+            legalPerson.setUserInformation(UserInformation.builder()
+                    .email(values.get(0)).build());
+            legalPerson.setCnpj(values.get(1));
+            return of(legalPerson, matchingAny());
+        }
+
+        @Override
+        public Example<LegalPerson> findBy(List<String> values) {
+            return null;
+        }
     };
 
     public abstract Example<LegalPerson> existBy(List<String> values);

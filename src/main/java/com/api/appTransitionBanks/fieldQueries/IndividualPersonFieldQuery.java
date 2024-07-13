@@ -1,6 +1,7 @@
 package com.api.appTransitionBanks.fieldQueries;
 
 import com.api.appTransitionBanks.entities.IndividualPerson;
+import com.api.appTransitionBanks.entities.LegalPerson;
 import com.api.appTransitionBanks.entities.UserInformation;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Example;
@@ -49,6 +50,21 @@ public enum IndividualPersonFieldQuery {
         public Example<IndividualPerson> existBy(List<String> values) {
             var individualPerson = new IndividualPerson();
             individualPerson.setUserInformation(UserInformation.builder().email(values.get(0)).build());
+            return of(individualPerson, matchingAny());
+        }
+
+        @Override
+        public Example<IndividualPerson> findBy(List<String> values) {
+            return null;
+        }
+    },
+    EMAIL_CPF{
+        @Override
+        public Example<IndividualPerson> existBy(List<String> values) {
+            var individualPerson = new IndividualPerson();
+            individualPerson.setUserInformation(UserInformation.builder()
+                    .email(values.get(0)).build());
+            individualPerson.setCpf(values.get(1));
             return of(individualPerson, matchingAny());
         }
 

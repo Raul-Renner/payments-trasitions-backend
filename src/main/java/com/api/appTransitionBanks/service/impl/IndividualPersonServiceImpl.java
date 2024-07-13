@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.api.appTransitionBanks.enums.TypeAccount.FISICA;
+import static com.api.appTransitionBanks.fieldQueries.IndividualPersonFieldQuery.CPF;
 
 
 @Service
@@ -51,8 +52,26 @@ public class IndividualPersonServiceImpl {
     }
 
     @Transactional(rollbackFor = { Exception.class, Throwable.class })
+    public void processUpdate(IndividualPerson person){
+        try {
+            var userCopy = findBy(CPF.findBy(List.of(person.getCpf())));
+            userCopy.getUserInformation().setEmail(person.getUserInformation().getEmail());
+            userCopy.getUserInformation().setName(person.getUserInformation().getName());
+            userCopy.getUserInformation().setLastname(person.getUserInformation().getLastname());
+            update(userCopy);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while saving IndividualPerson", e);
+        }
+
+    }
+
+    @Transactional(rollbackFor = { Exception.class, Throwable.class })
     public void update(IndividualPerson person){
-        individualPersonRepository.save(person);
+        try {
+            individualPersonRepository.save(person);
+        } catch (Exception e){
+            throw new RuntimeException("Error while updating IndividualPerson", e);
+        }
     }
 
     @Transactional(readOnly = true)

@@ -1,6 +1,7 @@
 package com.api.appTransitionBanks.controller;
 
 import com.api.appTransitionBanks.dto.LegalPersonSaveDTO;
+import com.api.appTransitionBanks.dto.LegalPersonUpdateDTO;
 import com.api.appTransitionBanks.service.impl.LegalPersonServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -48,6 +49,22 @@ public class LegalPersonController {
         return ResponseEntity.ok(bundle.getString("user.cnpj.create.success"));
     }
 
+
+    @Operation(
+            summary = "update data a person legal",
+            description = "This endpoint is used to update data account bank to person legal",
+            tags = {"update"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = LegalPersonUpdateDTO.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(defaultValue = "Server Error"))})
+    })
+    @PutMapping
+    public ResponseEntity update(@Valid @RequestBody LegalPersonUpdateDTO legalPersonUpdateDTO){
+        var bundle = getBundle("ValidationMessages", getDefault());
+        legalPersonService.processUpdate(legalPersonUpdateDTO.toEntity());
+        return ResponseEntity.ok(bundle.getString("user.update.success"));
+    }
 
 
     @Operation(
