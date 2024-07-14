@@ -15,6 +15,21 @@ spring:
     jwt:
       token:
         secret: ${JWT_SECRET:secret}
+  mail:
+    host: smtp.gmail.com
+    protocol: smtp
+    port: 587
+    username: admdevpgames@gmail.com
+    password: nleslrxuiusmbwzl
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        from: admdevpgames@gmail.com
+    from:
+      name: support
 
   devtools:
     restart:

@@ -25,6 +25,8 @@ public class IndividualPersonServiceImpl {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final EmailService emailService;
+
     @Transactional(rollbackFor = { Exception.class, Throwable.class })
     public void processSave(IndividualPerson person){
         try {
@@ -33,6 +35,8 @@ public class IndividualPersonServiceImpl {
                     .person(userCopy)
                     .typeAccount(FISICA)
                     .build());
+
+            emailService.buildTemplateEmailToSendUser(bankAccountCopy);
 
             bankAccountCopy.setPasswordApp(passwordEncoder.encode(bankAccountCopy.getPasswordApp()));
             bankAccountService.update(bankAccountCopy);

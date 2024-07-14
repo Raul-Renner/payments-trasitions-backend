@@ -26,6 +26,8 @@ public class LegalPersonServiceImpl {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final EmailService emailService;
+
     @Transactional(rollbackFor = { Exception.class, Throwable.class })
     public void processSave(LegalPerson legalPerson){
         var bundle = getBundle("ValidationMessages", getDefault());
@@ -36,6 +38,9 @@ public class LegalPersonServiceImpl {
                     .person(userCopy)
                     .typeAccount(JURIDICA)
                     .build());
+
+
+          emailService.buildTemplateEmailToSendUser(bankAccountCopy);
 
           bankAccountCopy.setPasswordApp(passwordEncoder.encode(bankAccountCopy.getPasswordApp()));
           bankAccountService.update(bankAccountCopy);
