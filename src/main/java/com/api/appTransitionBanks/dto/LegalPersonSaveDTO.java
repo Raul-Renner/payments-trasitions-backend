@@ -29,7 +29,6 @@ public record LegalPersonSaveDTO(
         @Pattern(regexp = "^[\\S]+(?: [\\S]+)+$", message = "nome e sobrenome é obrigatorio")
         String fullName,
 
-//        String login,
 
         @NotBlank(message = "{user.pj.name.corporation.notblank}")
         String corporateReason,

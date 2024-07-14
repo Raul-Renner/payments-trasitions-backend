@@ -67,6 +67,7 @@ public class LegalPersonServiceImpl {
             var userCopy = findBy(CNPJ.findBy(List.of(legalPerson.getCnpj())));
             userCopy.getUserInformation().setEmail(legalPerson.getUserInformation().getEmail());
             userCopy.getUserInformation().setName(legalPerson.getUserInformation().getName());
+            userCopy.setCorporateReason(legalPerson.getCorporateReason());
             userCopy.getUserInformation().setLastname(legalPerson.getUserInformation().getLastname());
             update(userCopy);
         } catch (Exception e) {

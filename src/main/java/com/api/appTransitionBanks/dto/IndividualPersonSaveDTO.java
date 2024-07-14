@@ -25,11 +25,6 @@ public record IndividualPersonSaveDTO (
      @Pattern(regexp = "^[\\S]+(?: [\\S]+)+$", message = "{user.username.name.required}")
      String fullName,
 
-//     @NotBlank(message = "o nome de login é obrigatório.")
-//     @Pattern(regexp = "^[a-zA-Z0-9._]+$", message = "login inválido")
-//     @Size(min = 3, max = 20, message = "Login deve conter entre 3 e 20 caracteres")
-//     String login,
-
      @ValidCPF
      @NotBlank(message = "{user.individual.cpf.notblank}")
      @Pattern(regexp = "(^\\d{3}\\x2E\\d{3}\\x2E\\d{3}\\x2D\\d{2}$)")

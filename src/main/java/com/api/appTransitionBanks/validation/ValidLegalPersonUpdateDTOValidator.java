@@ -27,17 +27,18 @@ public class ValidLegalPersonUpdateDTOValidator implements ConstraintValidator<V
         var bundle = getBundle("ValidationMessages", getDefault());
         var isValid = true;
 
-           if(legalPersonService.existBy(CNPJ.existBy(List.of(value.cnpj())))){
-               if(!legalPersonService.existBy(EMAIL_CNPJ.existBy(List.of(value.email(), value.cnpj())))
-                       && legalPersonService.existBy(EMAIL.existBy(List.of(value.cnpj())))
-                       && individualPersonService.existBy(IndividualPersonFieldQuery.EMAIL.existBy(List.of(value.email())))){
-                   context.buildConstraintViolationWithTemplate(bundle.getString("user.email.exist"));
-                   isValid = false;
-               }
-           }else {
-               context.buildConstraintViolationWithTemplate(bundle.getString("user.notfound.cnpj"));
+        if(legalPersonService.existBy(CNPJ.existBy(List.of(value.cnpj())))){
+            var user = legalPersonService.findBy(CNPJ.findBy(List.of(value.cnpj())));
+            if(!user.getUserInformation().getEmail().equals(value.email())
+                   && (legalPersonService.existBy(EMAIL.existBy(List.of(value.email())))
+                   || individualPersonService.existBy(IndividualPersonFieldQuery.EMAIL.existBy(List.of(value.email()))))){
+               context.buildConstraintViolationWithTemplate(bundle.getString("user.email.exist")).addConstraintViolation();
                isValid = false;
            }
+       }else {
+           context.buildConstraintViolationWithTemplate(bundle.getString("user.notfound.cnpj")).addConstraintViolation();
+           isValid = false;
+       }
 
         return isValid;
     }

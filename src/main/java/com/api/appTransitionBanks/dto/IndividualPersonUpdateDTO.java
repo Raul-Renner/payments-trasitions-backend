@@ -9,8 +9,6 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
-import static com.api.appTransitionBanks.enums.ProfileEnum.FISICA;
-
 @Builder
 @ValidIndividualPersonUpdateDTO
 public record IndividualPersonUpdateDTO(
@@ -25,12 +23,6 @@ public record IndividualPersonUpdateDTO(
      @Pattern(regexp = "^[\\S]+(?: [\\S]+)+$", message = "{user.username.name.required}")
      String fullName,
 
-//     @NotBlank(message = "o nome de login é obrigatório.")
-//     @Pattern(regexp = "^[a-zA-Z0-9._]+$", message = "login inválido")
-//     @Size(min = 3, max = 20, message = "Login deve conter entre 3 e 20 caracteres")
-//     String login,
-
-
      @NotBlank(message = "{user.individual.cpf.notblank}")
      @Pattern(regexp = "(^\\d{3}\\x2E\\d{3}\\x2E\\d{3}\\x2D\\d{2}$)")
      @Size(min = 14, max = 14, message = "{user.limit.number.cpf}")
@@ -39,8 +31,6 @@ public record IndividualPersonUpdateDTO(
     public IndividualPerson toEntity(){
         var personPf = new IndividualPerson();
         personPf.setCpf(cpf);
-        personPf.setProfile(profile);
-        personPf.setProfile(FISICA);
         personPf.setUserInformation(
                 UserInformation.builder()
                         .email(email)

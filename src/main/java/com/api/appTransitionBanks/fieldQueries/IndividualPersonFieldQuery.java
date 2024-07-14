@@ -1,7 +1,6 @@
 package com.api.appTransitionBanks.fieldQueries;
 
 import com.api.appTransitionBanks.entities.IndividualPerson;
-import com.api.appTransitionBanks.entities.LegalPerson;
 import com.api.appTransitionBanks.entities.UserInformation;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Example;
@@ -65,12 +64,16 @@ public enum IndividualPersonFieldQuery {
             individualPerson.setUserInformation(UserInformation.builder()
                     .email(values.get(0)).build());
             individualPerson.setCpf(values.get(1));
-            return of(individualPerson, matchingAny());
+            return of(individualPerson, matchingAny().withIgnoreCase("userInformation.email"));
         }
 
         @Override
         public Example<IndividualPerson> findBy(List<String> values) {
-            return null;
+            var individualPerson = new IndividualPerson();
+            individualPerson.setUserInformation(UserInformation.builder()
+                    .email(values.get(1)).build());
+            individualPerson.setCpf(values.get(0));
+            return of(individualPerson, matchingAny());
         }
     };
 

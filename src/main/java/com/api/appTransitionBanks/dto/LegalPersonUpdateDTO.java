@@ -3,8 +3,7 @@ package com.api.appTransitionBanks.dto;
 import com.api.appTransitionBanks.entities.LegalPerson;
 import com.api.appTransitionBanks.entities.UserInformation;
 import com.api.appTransitionBanks.enums.ProfileEnum;
-import com.api.appTransitionBanks.validation.ValidCNPJ;
-import com.api.appTransitionBanks.validation.ValidEMAIL;
+
 import com.api.appTransitionBanks.validation.ValidLegalPersonUpdateDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -29,8 +28,6 @@ public record LegalPersonUpdateDTO(
         @NotBlank(message = "nome completo é obrigatório")
         @Pattern(regexp = "^[\\S]+(?: [\\S]+)+$", message = "nome e sobrenome é obrigatorio")
         String fullName,
-
-//        String login,
 
         @NotBlank(message = "{user.pj.name.corporation.notblank}")
         String corporateReason,
